@@ -50,12 +50,12 @@ class ToiletTrainingTracker extends Component {
                         return (<TouchableHighlight onPress={() => {
                             navigator.push({id: "config"})
                         }}>
-                            <Text>Configure</Text>
+                            <Text style={{padding: 4}}>Configure</Text>
                         </TouchableHighlight>);
                     case "config":
                         return (<TouchableHighlight onPress={() => {
                             navigator.pop()
-                        }}><Text>Done</Text></TouchableHighlight>);
+                        }}><Text style={{padding: 4}}>Done</Text></TouchableHighlight>);
                 }
             },
             Title: (route, navigator, index, navState) => {

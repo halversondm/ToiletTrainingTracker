@@ -2,30 +2,39 @@
  * Created by halversondm on 8/25/16.
  */
 "use strict";
-import React, {Component} from "react";
+import React, {Component, PropTypes} from "react";
 import {StyleSheet, Text, View} from "react-native";
+import styles from "./ToiletStyle";
 
-class Heading extends React.Component {
+class Heading extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    static propTypes = {
+        needArrow: PropTypes.bool
+    }
+
+    static defaultProps = {
+        needArrow: true
+    }
+
     render() {
+        let arrow;
+        if (this.props.needArrow) {
+            arrow = <Text style={styles.arrow}>&gt;</Text>;
+        } else {
+            arrow = <Text />;
+        }
         return (
             <View style={styles.headingContainer}>
                 <Text style={styles.heading}>
                     {this.props.label}
                 </Text>
+                {arrow}
             </View>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    headingContainer: {
-        padding: 4,
-        backgroundColor: '#f6f7f8',
-    },
-    heading: {
-        fontWeight: 'bold',
-        fontSize: 14,
-    },
-});
 
 export default Heading;

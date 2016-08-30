@@ -9,6 +9,7 @@ import {
     Text,
     View, TouchableHighlight, TextInput, ActivityIndicator
 } from 'react-native';
+import styles from "./ToiletStyle";
 
 class Login extends Component {
     constructor(props) {
@@ -22,17 +23,17 @@ class Login extends Component {
         setTimeout(() => {
             this.setState({isLoading: false});
             this.props.navigator.replace({id: "track"});
-        }, 2000);
+        }, 1000);
     }
 
     render() {
         var spinner = this.state.isLoading ? <ActivityIndicator size="large"/> : <View />;
         return (
             <View style={styles.container}>
-                <TextInput style={styles.input} placeholder="Enter Email Address" autoCapitalize="none"
+                <TextInput style={styles.input} placeholder="email address" autoCapitalize="none"
                            keyboardType="email-address"
                            onChangeText={(text) => this.setState({email: text})}/>
-                <TextInput style={styles.input} placeholder="Enter Password" autoCapitalize="none"
+                <TextInput style={styles.input} placeholder="password" autoCapitalize="none"
                            onChangeText={(text) => this.setState({key: text})} secureTextEntry={true}/>
                 <TouchableHighlight style={styles.button} underlayColor="#99d9f4" onPress={this.onLoginPressed}>
                     <Text style={styles.buttonText}>Login</Text>
@@ -43,52 +44,5 @@ class Login extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        padding: 30,
-        marginTop: 65,
-        alignItems: 'center'
-    },
-    flowRight: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        alignSelf: 'stretch'
-    },
-    input: {
-        height: 36,
-        padding: 4,
-        margin: 5,
-        flex: 4,
-        fontSize: 18,
-        borderWidth: 1,
-        borderColor: '#48BBEC',
-        borderRadius: 8,
-        color: '#48BBEC'
-    },
-    buttonText: {
-        fontSize: 18,
-        color: 'white',
-        alignSelf: 'center'
-    },
-    button: {
-        height: 36,
-        flex: 1,
-        flexDirection: 'row',
-        backgroundColor: '#48BBEC',
-        borderColor: '#48BBEC',
-        borderWidth: 1,
-        borderRadius: 8,
-        margin: 5,
-        alignSelf: 'stretch',
-        justifyContent: 'center'
-    },
-    description: {
-        marginBottom: 20,
-        fontSize: 18,
-        textAlign: 'center',
-        color: '#656565'
-    }
-});
 
 export default Login;
