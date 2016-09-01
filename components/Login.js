@@ -10,6 +10,8 @@ import {
     View, TouchableHighlight, TextInput, ActivityIndicator
 } from 'react-native';
 import styles from "./ToiletStyle";
+import {connect} from "react-redux";
+import {updateForm, authenticated, notAuthenticated, setConfig} from "./actions";
 
 class Login extends Component {
     constructor(props) {
@@ -20,10 +22,29 @@ class Login extends Component {
 
     onLoginPressed() {
         this.setState({isLoading: true});
-        setTimeout(() => {
+        this.props.dispatch(updateForm(this.state.email, this.state.key));
+        var data = JSON.stringify(this.state);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:3000/loginService");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 400) {
+                const response = JSON.parse(xhr.responseText);
+                this.props.dispatch(authenticated());
+                this.props.dispatch(setConfig(response.config, response.profileId));
+                this.props.navigator.replace({id: "track"});
+            } else {
+                console.log("unsucc ", xhr.responseText);
+                this.props.dispatch(notAuthenticated());
+                this.setState({error: true});
+            }
             this.setState({isLoading: false});
-            this.props.navigator.replace({id: "track"});
-        }, 1000);
+        };
+        xhr.onerror = () => {
+            console.log(xhr);
+            this.setState({isLoading: false});
+        };
+        xhr.send(data);
     }
 
     render() {
@@ -31,7 +52,7 @@ class Login extends Component {
         return (
             <View style={styles.container}>
                 <TextInput style={styles.input} placeholder="email address" autoCapitalize="none"
-                           keyboardType="email-address"
+                           keyboardType="email-address" autoCorrect={false}
                            onChangeText={(text) => this.setState({email: text})}/>
                 <TextInput style={styles.input} placeholder="password" autoCapitalize="none"
                            onChangeText={(text) => this.setState({key: text})} secureTextEntry={true}/>
@@ -45,4 +66,10 @@ class Login extends Component {
     }
 }
 
-export default Login;
+function select(state) {
+    return {
+        data: state
+    };
+}
+
+export default connect(select)(Login);

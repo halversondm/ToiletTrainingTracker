@@ -13,10 +13,15 @@ import {
     View,
     Navigator,
     TouchableHighlight
-} from 'react-native';
+} from "react-native";
 import Login from "./components/Login";
 import Track from "./components/Track";
 import Configure from "./components/Configure";
+import {Provider} from "react-redux";
+import {createStore} from "redux";
+import trackerStore from "./components/reducers";
+
+let store = createStore(trackerStore);
 
 class ToiletTrainingTracker extends Component {
     constructor(props) {
@@ -31,7 +36,7 @@ class ToiletTrainingTracker extends Component {
             case "track":
                 return <Track navigator={nav}/>;
             case "config":
-                return <Configure navigator={nav} />;
+                return <Configure navigator={nav}/>;
             default:
                 return <Login navigator={nav}/>;
         }
@@ -40,6 +45,11 @@ class ToiletTrainingTracker extends Component {
     render() {
         const navBar = <Navigator.NavigationBar routeMapper={{
             LeftButton: (route, navigator, index, navState) => {
+                if (route.id === "config") {
+                    return (<TouchableHighlight onPress={() => {
+                        navigator.pop()
+                    }}><Text style={{padding: 4}}>Done</Text></TouchableHighlight>);
+                }
                 return null;
             },
             RightButton: (route, navigator, index, navState) => {
@@ -52,10 +62,6 @@ class ToiletTrainingTracker extends Component {
                         }}>
                             <Text style={{padding: 4}}>Configure</Text>
                         </TouchableHighlight>);
-                    case "config":
-                        return (<TouchableHighlight onPress={() => {
-                            navigator.pop()
-                        }}><Text style={{padding: 4}}>Done</Text></TouchableHighlight>);
                 }
             },
             Title: (route, navigator, index, navState) => {
@@ -69,12 +75,14 @@ class ToiletTrainingTracker extends Component {
             return Navigator.SceneConfigs.FloatFromRight
         };
         return (
-            <Navigator style={styles.container}
-                       initialRoute={{id: "login"}}
-                       renderScene={this.renderScene}
-                       configureScene={configScene}
-                       navigationBar={navBar}
-            />
+            <Provider store={store}>
+                <Navigator style={styles.container}
+                           initialRoute={{id: "login"}}
+                           renderScene={this.renderScene}
+                           configureScene={configScene}
+                           navigationBar={navBar}
+                />
+            </Provider>
         );
     }
 }

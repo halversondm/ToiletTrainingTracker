@@ -9,27 +9,40 @@ import {
     Text,
     ScrollView, TouchableHighlight, TextInput, ActivityIndicator
 } from 'react-native';
-
 import Heading from "./Heading";
 import styles from "./ToiletStyle";
+import {connect} from "react-redux";
 
 class Configure extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            config: {
-                intervalBetweenDryCheck: 0,
-                intervalBetweenToiletVisit: 0,
-                traineeDurationOnToilet: 0,
-                rewardForVoiding: ""
-            },
-            profileId: 0
-        };
+        this.state = this.props.data;
         this.onSavePressed = this.onSavePressed.bind(this);
     }
 
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps);
+        this.setState(nextProps.data);
+    }
+
     onSavePressed() {
-        console.log(this.state);
+        var currentState = this.state;
+        var dataToSend = Object.assign({}, currentState, {emailAddress: this.props.data.loginForm.email});
+        var data = JSON.stringify(dataToSend);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:3000/saveConfig");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 400) {
+                console.log("saved config");
+            } else {
+                console.log("unsucc ", xhr.responseText);
+            }
+        };
+        xhr.onerror = () => {
+            console.log(xhr);
+        };
+        xhr.send(data);
     }
 
     render() {
@@ -71,4 +84,10 @@ class Configure extends Component {
     }
 }
 
-export default Configure;
+function select(state) {
+    return {
+        data: state
+    };
+}
+
+export default connect(select)(Configure);

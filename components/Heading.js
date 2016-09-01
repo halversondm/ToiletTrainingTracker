@@ -11,14 +11,6 @@ class Heading extends Component {
         super(props);
     }
 
-    static propTypes = {
-        needArrow: PropTypes.bool
-    }
-
-    static defaultProps = {
-        needArrow: true
-    }
-
     render() {
         let arrow;
         if (this.props.needArrow) {
@@ -36,5 +28,13 @@ class Heading extends Component {
         );
     }
 }
+
+Heading.propTypes = {
+    needArrow: PropTypes.bool
+};
+
+Heading.defaultProps = {
+    needArrow: true
+};
 
 export default Heading;

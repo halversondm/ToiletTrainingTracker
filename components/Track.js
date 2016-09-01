@@ -12,11 +12,38 @@ import {
 import WithLabel from "./WithLabel";
 import Heading from "./Heading";
 import styles from "./ToiletStyle";
+import {connect} from "react-redux";
 
 class Track extends Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = this.initialState();
+        this.onSavePressed = this.onSavePressed.bind(this);
+        this.initialState = this.initialState.bind(this);
+    }
+
+    onSavePressed() {
+        var currentState = this.state.data;
+        var dataToSend = Object.assign({}, currentState, {profileId: this.props.profileId});
+        var data = JSON.stringify(dataToSend);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:3000/saveTrack");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 400) {
+                this.setState(this.initialState());
+            } else {
+                console.log("unsucc ", xhr.responseText);
+            }
+        };
+        xhr.onerror = () => {
+            console.log(xhr);
+        };
+        xhr.send(data);
+    }
+
+    initialState() {
+        return {
             data: {
                 date: new Date(),
                 typeOfActivity: "",
@@ -31,11 +58,6 @@ class Track extends Component {
             showVoidOfTypePicker: false,
             showPromptedVisitPicker: false
         };
-        this.onSavePressed = this.onSavePressed.bind(this);
-    }
-
-    onSavePressed() {
-        console.log(this.state);
     }
 
     render() {
@@ -216,4 +238,10 @@ class Track extends Component {
     }
 }
 
-export default Track;
+function select(state) {
+    return {
+        profileId: state.profileId
+    };
+}
+
+export default connect(select)(Track);
