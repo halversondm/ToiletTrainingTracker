@@ -19,7 +19,6 @@ class Track extends Component {
         super(props);
         this.state = this.initialState();
         this.onSavePressed = this.onSavePressed.bind(this);
-        this.initialState = this.initialState.bind(this);
     }
 
     onSavePressed() {
@@ -27,7 +26,11 @@ class Track extends Component {
         var dataToSend = Object.assign({}, currentState, {profileId: this.props.profileId});
         var data = JSON.stringify(dataToSend);
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://localhost:3000/saveTrack");
+        if (__DEV__) {
+            xhr.open("POST", "http://localhost:3000/saveTrack");
+        } else {
+            xhr.open("POST", "http://toilettracker.halversondm.com/saveTrack");
+        }
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 400) {

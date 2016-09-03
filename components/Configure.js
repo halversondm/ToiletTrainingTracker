@@ -20,17 +20,16 @@ class Configure extends Component {
         this.onSavePressed = this.onSavePressed.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        console.log(nextProps);
-        this.setState(nextProps.data);
-    }
-
     onSavePressed() {
         var currentState = this.state;
         var dataToSend = Object.assign({}, currentState, {emailAddress: this.props.data.loginForm.email});
         var data = JSON.stringify(dataToSend);
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://localhost:3000/saveConfig");
+        if (__DEV__) {
+            xhr.open("POST", "http://localhost:3000/saveConfig");
+        } else {
+            xhr.open("POST", "http://toilettracker.halversondm.com/saveConfig");
+        }
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 400) {
@@ -70,9 +69,9 @@ class Configure extends Component {
                 }} value={this.state.config.traineeDurationOnToilet} placeholder="in minutes" keyboardType={"numeric"}/>
 
                 <Heading label="Reward For Voiding" needArrow={false}/>
-                <TextInput style={styles.input} onChangeText={(minutes) => {
+                <TextInput style={styles.input} onChangeText={(reward) => {
                     let config = this.state.config;
-                    config.rewardForVoiding = minutes;
+                    config.rewardForVoiding = reward;
                     this.setState({config: config});
                 }} value={this.state.config.rewardForVoiding} />
 

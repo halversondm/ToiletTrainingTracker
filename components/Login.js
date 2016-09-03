@@ -25,20 +25,24 @@ class Login extends Component {
         this.props.dispatch(updateForm(this.state.email, this.state.key));
         var data = JSON.stringify(this.state);
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://localhost:3000/loginService");
+        if (__DEV__) {
+            xhr.open("POST", "http://localhost:3000/loginService");
+        } else {
+            xhr.open("POST", "http://toilettracker.halversondm.com/loginService");
+        }
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 400) {
                 const response = JSON.parse(xhr.responseText);
                 this.props.dispatch(authenticated());
                 this.props.dispatch(setConfig(response.config, response.profileId));
+                this.setState({isLoading: false});
                 this.props.navigator.replace({id: "track"});
             } else {
                 console.log("unsucc ", xhr.responseText);
                 this.props.dispatch(notAuthenticated());
-                this.setState({error: true});
+                this.setState({error: true, isLoading: false});
             }
-            this.setState({isLoading: false});
         };
         xhr.onerror = () => {
             console.log(xhr);
