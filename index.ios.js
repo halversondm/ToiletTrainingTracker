@@ -50,6 +50,11 @@ class ToiletTrainingTracker extends Component {
                         navigator.pop()
                     }}><Text style={{padding: 4}}>Done</Text></TouchableHighlight>);
                 }
+                if (route.id === "track") {
+                    return (<TouchableHighlight onPress={() => {
+                     navigator.push({id: "login"});
+                    }}><Text style={{padding: 4}}>Logout</Text></TouchableHighlight>);
+                }
                 return null;
             },
             RightButton: (route, navigator, index, navState) => {

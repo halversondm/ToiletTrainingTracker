@@ -6,12 +6,15 @@
 import React, {Component} from 'react';
 import {
     StyleSheet,
-    Text,
+    Text, Linking,
     View, TouchableHighlight, TextInput, ActivityIndicator
 } from 'react-native';
 import styles from "./ToiletStyle";
 import {connect} from "react-redux";
 import {updateForm, authenticated, notAuthenticated, setConfig} from "./actions";
+import {endpointBuilder} from "./environment";
+
+const disconnected = "It doesn't appear that you are connected to the Internet. Please connect and try again.";
 
 class Login extends Component {
     constructor(props) {
@@ -21,15 +24,12 @@ class Login extends Component {
     }
 
     onLoginPressed() {
+        const notAuth = "Invalid email and/or password";
         this.setState({isLoading: true});
         this.props.dispatch(updateForm(this.state.email, this.state.key));
         var data = JSON.stringify(this.state);
         var xhr = new XMLHttpRequest();
-        if (__DEV__) {
-            xhr.open("POST", "http://localhost:3000/loginService");
-        } else {
-            xhr.open("POST", "http://toilettracker.halversondm.com/loginService");
-        }
+        xhr.open("POST", endpointBuilder("/loginService"));
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 400) {
@@ -41,14 +41,25 @@ class Login extends Component {
             } else {
                 console.log("unsucc ", xhr.responseText);
                 this.props.dispatch(notAuthenticated());
-                this.setState({error: true, isLoading: false});
+                this.setState({isLoading: false, message: notAuth});
             }
         };
         xhr.onerror = () => {
             console.log(xhr);
-            this.setState({isLoading: false});
+            this.setState({isLoading: false, message: disconnected});
         };
         xhr.send(data);
+    }
+
+    onSignupPressed() {
+        const url = endpointBuilder("/signup");
+        Linking.canOpenURL(url).then(supported => {
+            if (!supported) {
+                this.setState({message: disconnected});
+            } else {
+                return Linking.openURL(url);
+            }
+        }).catch(err => this.setState({message: disconnected}));
     }
 
     render() {
@@ -64,6 +75,9 @@ class Login extends Component {
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableHighlight>
                 {spinner}
+                <TouchableHighlight style={styles.button} underlayColor="#99d9f4" onPress={this.onSignupPressed}>
+                    <Text style={styles.buttonText}>Signup</Text>
+                </TouchableHighlight>
                 <Text style={styles.description}>{this.state.message}</Text>
             </View>
         );
