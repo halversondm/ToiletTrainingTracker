@@ -13,6 +13,8 @@ import Heading from "./Heading";
 import styles from "./ToiletStyle";
 import {connect} from "react-redux";
 import {endpointBuilder} from "./environment";
+import reactMixin from "react-mixin";
+import timerMixin from "react-timer-mixin";
 
 class Configure extends Component {
     constructor(props) {
@@ -43,7 +45,7 @@ class Configure extends Component {
         };
         xhr.send(data);
 
-        setInterval(() => {this.setState({message: ""})}, 2000);
+        this.setInterval(() => {this.setState({message: ""})}, 2000);
     }
 
     render() {
@@ -87,6 +89,8 @@ class Configure extends Component {
         );
     }
 }
+
+reactMixin(Configure.prototype, timerMixin);
 
 function select(state) {
     return {
