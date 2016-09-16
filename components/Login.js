@@ -20,10 +20,9 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {email: "", key: "", isLoading: false, message: ""};
-        this.onLoginPressed = this.onLoginPressed.bind(this);
     }
 
-    onLoginPressed() {
+    onLoginPressed = () => {
         const notAuth = "Invalid email and/or password";
         this.setState({isLoading: true});
         this.props.dispatch(updateForm(this.state.email, this.state.key));
@@ -49,18 +48,7 @@ class Login extends Component {
             this.setState({isLoading: false, message: disconnected});
         };
         xhr.send(data);
-    }
-
-    onSignupPressed() {
-        const url = endpointBuilder("/signup");
-        Linking.canOpenURL(url).then(supported => {
-            if (!supported) {
-                this.setState({message: disconnected});
-            } else {
-                return Linking.openURL(url);
-            }
-        }).catch(err => this.setState({message: disconnected}));
-    }
+    };
 
     render() {
         var spinner = this.state.isLoading ? <ActivityIndicator size="large"/> : <View />;
@@ -75,9 +63,6 @@ class Login extends Component {
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableHighlight>
                 {spinner}
-                <TouchableHighlight style={styles.button} underlayColor="#99d9f4" onPress={this.onSignupPressed}>
-                    <Text style={styles.buttonText}>Signup</Text>
-                </TouchableHighlight>
                 <Text style={styles.description}>{this.state.message}</Text>
             </View>
         );

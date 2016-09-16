@@ -19,22 +19,32 @@ class Heading extends Component {
             arrow = <Text />;
         }
         return (
-            <View style={styles.headingContainer}>
-                <Text style={styles.heading}>
-                    {this.props.label}
-                </Text>
-                {arrow}
+            <View style={styles.headingView}>
+                <View style={styles.headingContainer}>
+                    <Text style={styles.heading}>
+                        {this.props.label}
+                    </Text>
+                    {arrow}
+                </View>
+                <View style={styles.headingContainer}>
+                    <Text style={styles.headingValue}>{this.props.value}</Text>
+                </View>
             </View>
         );
     }
 }
 
 Heading.propTypes = {
-    needArrow: PropTypes.bool
+    needArrow: PropTypes.bool,
+    label: PropTypes.string,
+    value: PropTypes.string
+
 };
 
 Heading.defaultProps = {
-    needArrow: true
+    needArrow: true,
+    label: "",
+    value: ""
 };
 
 export default Heading;

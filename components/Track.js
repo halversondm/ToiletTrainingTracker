@@ -19,10 +19,9 @@ class Track extends Component {
     constructor(props) {
         super(props);
         this.state = this.initialState();
-        this.onSavePressed = this.onSavePressed.bind(this);
     }
 
-    onSavePressed() {
+    onSavePressed = () => {
         var currentState = this.state.data;
         var dataToSend = Object.assign({}, currentState, {profileId: this.props.profileId});
         var data = JSON.stringify(dataToSend);
@@ -40,9 +39,9 @@ class Track extends Component {
             console.log(xhr);
         };
         xhr.send(data);
-    }
+    };
 
-    initialState() {
+    initialState = () => {
         return {
             data: {
                 date: new Date(),
@@ -58,7 +57,7 @@ class Track extends Component {
             showVoidOfTypePicker: false,
             showPromptedVisitPicker: false
         };
-    }
+    };
 
     render() {
         let toiletVisitAddOn;
@@ -68,7 +67,7 @@ class Track extends Component {
                 break;
             case "Toilet Visit":
                 toiletVisitAddOn = <View>
-                    <Heading label="Time Duration of Toilet Visit" needArrow={false} />
+                    <Heading label="Time Duration of Toilet Visit" needArrow={false}/>
                     <TextInput style={styles.input} onChangeText={(duration) => {
                         let data = this.state.data;
                         data.duration = duration;
@@ -78,16 +77,16 @@ class Track extends Component {
                         this.setState({showVoidOfTypePicker: true})
                     }}>
                         <View>
-                            <Heading label="Type of Void"/>
+                            <Heading label="Type of Void" value={this.state.data.typeOfVoid}/>
                         </View>
                     </TouchableHighlight>
                     <Modal animationType={"slide"} visible={this.state.showVoidOfTypePicker}>
-                        <View style={{marginTop: 22}}>
+                        <View style={styles.modalView}>
                             <View>
                                 <TouchableHighlight onPress={() => {
                                     this.setState({showVoidOfTypePicker: false});
                                 }}>
-                                    <Text style={{padding: 4}}>Close</Text>
+                                    <Text style={styles.modalText}>Close</Text>
                                 </TouchableHighlight>
                             </View>
                         </View>
@@ -108,16 +107,16 @@ class Track extends Component {
                         this.setState({showPromptedVisitPicker: true})
                     }}>
                         <View>
-                            <Heading label="Prompted Visit?"/>
+                            <Heading label="Prompted Visit?" value={this.state.data.promptedVisit}/>
                         </View>
                     </TouchableHighlight>
                     <Modal animationType={"slide"} visible={this.state.showPromptedVisitPicker}>
-                        <View style={{marginTop: 22}}>
+                        <View style={styles.modalView}>
                             <View>
                                 <TouchableHighlight onPress={() => {
                                     this.setState({showPromptedVisitPicker: false});
                                 }}>
-                                    <Text style={{padding: 4}}>Close</Text>
+                                    <Text style={styles.modalText}>Close</Text>
                                 </TouchableHighlight>
                             </View>
                         </View>
@@ -141,16 +140,16 @@ class Track extends Component {
                             this.setState({showTypeOfVoidPicker: true})
                         }}>
                             <View>
-                                <Heading label="Wet or Dry?"/>
+                                <Heading label="Wet or Dry?" value={this.state.data.typeOfVoid}/>
                             </View>
                         </TouchableHighlight>
                         <Modal animationType={"slide"} visible={this.state.showTypeOfVoidPicker}>
-                            <View style={{marginTop: 22}}>
+                            <View style={styles.modalView}>
                                 <View>
                                     <TouchableHighlight onPress={() => {
                                         this.setState({showTypeOfVoidPicker: false});
                                     }}>
-                                        <Text style={{padding: 4}}>Close</Text>
+                                        <Text style={styles.modalText}>Close</Text>
                                     </TouchableHighlight>
                                 </View>
                             </View>
@@ -174,16 +173,16 @@ class Track extends Component {
                     this.setState({showDatePicker: true})
                 }}>
                     <View>
-                        <Heading label="Date"/>
+                        <Heading label="Date" value={this.state.data.date.toLocaleString()}/>
                     </View>
                 </TouchableHighlight>
                 <Modal animationType={"slide"} visible={this.state.showDatePicker}>
-                    <View style={{marginTop: 22}}>
+                    <View style={styles.modalView}>
                         <View>
                             <TouchableHighlight onPress={() => {
                                 this.setState({showDatePicker: false});
                             }}>
-                                <Text style={{padding: 4}}>Close</Text>
+                                <Text style={styles.modalText}>Close</Text>
                             </TouchableHighlight>
                         </View>
                     </View>
@@ -198,16 +197,16 @@ class Track extends Component {
                     this.setState({showTypePicker: true})
                 }}>
                     <View>
-                        <Heading label="Type of Activity"/>
+                        <Heading label="Type of Activity" value={this.state.data.typeOfActivity}/>
                     </View>
                 </TouchableHighlight>
                 <Modal animationType={"slide"} visible={this.state.showTypePicker}>
-                    <View style={{marginTop: 22}}>
+                    <View style={styles.modalView}>
                         <View>
                             <TouchableHighlight onPress={() => {
                                 this.setState({showTypePicker: false});
                             }}>
-                                <Text style={{padding: 4}}>Close</Text>
+                                <Text style={styles.modalText}>Close</Text>
                             </TouchableHighlight>
                         </View>
                     </View>
@@ -215,6 +214,7 @@ class Track extends Component {
                             onValueChange={(typeOfActivity) => {
                                 let data = this.state.data;
                                 data.typeOfActivity = typeOfActivity;
+                                data.typeOfVoid = "";
                                 this.setState({data: data})
                             }}>
                         <Picker.Item label="" value=""/>
@@ -224,7 +224,7 @@ class Track extends Component {
                 </Modal>
                 {toiletVisitAddOn}
                 <WithLabel label="Notes">
-                    <TextInput style={styles.input} onChangeText={(text) => {
+                    <TextInput style={styles.input} value={this.state.data.notes} onChangeText={(text) => {
                         let data = this.state.data;
                         data.notes = text;
                         this.setState({data: data});

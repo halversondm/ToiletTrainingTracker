@@ -20,10 +20,9 @@ class Configure extends Component {
     constructor(props) {
         super(props);
         this.state = Object.assign({}, this.props.data, {message: "", isLoading: false});
-        this.onSavePressed = this.onSavePressed.bind(this);
     }
 
-    onSavePressed() {
+    onSavePressed = () => {
         var currentState = this.state;
         this.setState({isLoading: true});
         var dataToSend = Object.assign({}, currentState, {emailAddress: this.props.data.loginForm.email});
@@ -46,7 +45,7 @@ class Configure extends Component {
         xhr.send(data);
 
         this.setInterval(() => {this.setState({message: ""})}, 2000);
-    }
+    };
 
     render() {
         var spinner = this.state.isLoading ? <ActivityIndicator size="large"/> : <View />;
