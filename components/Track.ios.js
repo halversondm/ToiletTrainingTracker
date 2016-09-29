@@ -6,7 +6,7 @@
 import React, {Component} from 'react';
 import {
     StyleSheet, ScrollView,
-    Text, DatePickerIOS, Picker, Modal,
+    Text, DatePickerIOS, PickerIOS, Modal,
     View, TouchableHighlight, TextInput, ActivityIndicator
 } from 'react-native';
 import WithLabel from "./WithLabel";
@@ -14,6 +14,7 @@ import Heading from "./Heading";
 import styles from "./ToiletStyle";
 import {connect} from "react-redux";
 import {endpointBuilder} from "./environment";
+import {typeOfVoid1, promptedVisit, typeOfVoid2, typeOfVisit} from "./data";
 
 class Track extends Component {
     constructor(props) {
@@ -60,7 +61,7 @@ class Track extends Component {
     };
 
     render() {
-        let toiletVisitAddOn;
+        var toiletVisitAddOn;
         switch (this.state.data.typeOfActivity) {
             case "":
                 toiletVisitAddOn = <View />;
@@ -74,13 +75,14 @@ class Track extends Component {
                         this.setState({data: data});
                     }} placeholder="in minutes"/>
                     <TouchableHighlight onPress={() => {
-                        this.setState({showVoidOfTypePicker: true})
+                        this.setState({showVoidOfTypePicker: true});
                     }}>
                         <View>
                             <Heading label="Type of Void" value={this.state.data.typeOfVoid}/>
                         </View>
                     </TouchableHighlight>
-                    <Modal animationType={"slide"} visible={this.state.showVoidOfTypePicker}>
+                    <Modal animationType={"slide"} visible={this.state.showVoidOfTypePicker} onRequestClose={() => {
+                    }}>
                         <View style={styles.modalView}>
                             <View>
                                 <TouchableHighlight onPress={() => {
@@ -90,18 +92,18 @@ class Track extends Component {
                                 </TouchableHighlight>
                             </View>
                         </View>
-                        <Picker selectedValue={this.state.data.typeOfVoid}
+                        <PickerIOS selectedValue={this.state.data.typeOfVoid}
                                 onValueChange={(typeOfVoid) => {
                                     let data = this.state.data;
                                     data.typeOfVoid = typeOfVoid;
                                     this.setState({data: data})
                                 }}>
-                            <Picker.Item label="" value=""/>
-                            <Picker.Item label="Urine" value="Urine"/>
-                            <Picker.Item label="Bowel Movement" value="Bowel Movement"/>
-                            <Picker.Item label="Both" value="Both"/>
-                            <Picker.Item label="None" value="None"/>
-                        </Picker>
+                            {
+                                typeOfVoid1.map((typeOfVoid, key) => {
+                                    return <PickerIOS.Item label={typeOfVoid} value={typeOfVoid} key={key}/>;
+                                })
+                            }
+                        </PickerIOS>
                     </Modal>
                     <TouchableHighlight onPress={() => {
                         this.setState({showPromptedVisitPicker: true})
@@ -110,7 +112,8 @@ class Track extends Component {
                             <Heading label="Prompted Visit?" value={this.state.data.promptedVisit}/>
                         </View>
                     </TouchableHighlight>
-                    <Modal animationType={"slide"} visible={this.state.showPromptedVisitPicker}>
+                    <Modal animationType={"slide"} visible={this.state.showPromptedVisitPicker} onRequestClose={() => {
+                    }}>
                         <View style={styles.modalView}>
                             <View>
                                 <TouchableHighlight onPress={() => {
@@ -120,16 +123,18 @@ class Track extends Component {
                                 </TouchableHighlight>
                             </View>
                         </View>
-                        <Picker selectedValue={this.state.data.promptedVisit}
+                        <PickerIOS selectedValue={this.state.data.promptedVisit}
                                 onValueChange={(promptedVisit) => {
                                     let data = this.state.data;
                                     data.promptedVisit = promptedVisit;
                                     this.setState({data: data})
                                 }}>
-                            <Picker.Item label="" value=""/>
-                            <Picker.Item label="Yes" value="Yes"/>
-                            <Picker.Item label="No" value="No"/>
-                        </Picker>
+                            {
+                                promptedVisit.map((promptedVisit, key) => {
+                                    return <PickerIOS.Item label={promptedVisit} value={promptedVisit} key={key}/>;
+                                })
+                            }
+                        </PickerIOS>
                     </Modal>
                 </View>;
                 break;
@@ -143,7 +148,8 @@ class Track extends Component {
                                 <Heading label="Wet or Dry?" value={this.state.data.typeOfVoid}/>
                             </View>
                         </TouchableHighlight>
-                        <Modal animationType={"slide"} visible={this.state.showTypeOfVoidPicker}>
+                        <Modal animationType={"slide"} visible={this.state.showTypeOfVoidPicker} onRequestClose={() => {
+                        }}>
                             <View style={styles.modalView}>
                                 <View>
                                     <TouchableHighlight onPress={() => {
@@ -153,16 +159,18 @@ class Track extends Component {
                                     </TouchableHighlight>
                                 </View>
                             </View>
-                            <Picker selectedValue={this.state.data.typeOfVoid}
+                            <PickerIOS selectedValue={this.state.data.typeOfVoid}
                                     onValueChange={(typeOfVoid) => {
                                         let data = this.state.data;
                                         data.typeOfVoid = typeOfVoid;
                                         this.setState({data: data})
                                     }}>
-                                <Picker.Item label="" value=""/>
-                                <Picker.Item label="Wet" value="Wet"/>
-                                <Picker.Item label="Dry" value="Dry"/>
-                            </Picker>
+                                {
+                                    typeOfVoid2.map((typeOfVoid, key) => {
+                                        return <PickerIOS.Item label={typeOfVoid} value={typeOfVoid} key={key}/>;
+                                    })
+                                }
+                            </PickerIOS>
                         </Modal>
                     </View>;
                 break;
@@ -173,7 +181,7 @@ class Track extends Component {
                     this.setState({showDatePicker: true})
                 }}>
                     <View>
-                        <Heading label="Date" value={this.state.data.date.toLocaleString()}/>
+                        <Heading label="Date and Time" value={this.state.data.date.toLocaleString()}/>
                     </View>
                 </TouchableHighlight>
                 <Modal animationType={"slide"} visible={this.state.showDatePicker}>
@@ -188,7 +196,7 @@ class Track extends Component {
                     </View>
                     <DatePickerIOS date={this.state.data.date} mode="datetime"
                                    onDateChange={(date) => {
-                                       let data = this.state.data;
+                                       var data = this.state.data;
                                        data.date = date;
                                        this.setState({data: data});
                                    }}/>
@@ -200,7 +208,8 @@ class Track extends Component {
                         <Heading label="Type of Activity" value={this.state.data.typeOfActivity}/>
                     </View>
                 </TouchableHighlight>
-                <Modal animationType={"slide"} visible={this.state.showTypePicker}>
+                <Modal animationType={"slide"} visible={this.state.showTypePicker} onRequestClose={() => {
+                }}>
                     <View style={styles.modalView}>
                         <View>
                             <TouchableHighlight onPress={() => {
@@ -210,17 +219,19 @@ class Track extends Component {
                             </TouchableHighlight>
                         </View>
                     </View>
-                    <Picker selectedValue={this.state.data.typeOfActivity}
+                    <PickerIOS selectedValue={this.state.data.typeOfActivity}
                             onValueChange={(typeOfActivity) => {
                                 let data = this.state.data;
                                 data.typeOfActivity = typeOfActivity;
                                 data.typeOfVoid = "";
                                 this.setState({data: data})
                             }}>
-                        <Picker.Item label="" value=""/>
-                        <Picker.Item label="Toilet Visit" value="Toilet Visit"/>
-                        <Picker.Item label="Underwear Check" value="Underwear Check"/>
-                    </Picker>
+                        {
+                            typeOfVisit.map((typeOfVisit, key) => {
+                                return <PickerIOS.Item label={typeOfVisit} value={typeOfVisit} key={key}/>;
+                            })
+                        }
+                    </PickerIOS>
                 </Modal>
                 {toiletVisitAddOn}
                 <WithLabel label="Notes">
