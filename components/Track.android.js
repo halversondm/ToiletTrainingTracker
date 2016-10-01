@@ -71,14 +71,14 @@ class Track extends Component {
                     this.showDatePicker();
                 }}>
                     <View>
-                        <Heading label="Date" value={this.state.data.date.toLocaleString()}/>
+                        <Heading label="Date" value={this.state.data.date.toLocaleDateString()}/>
                     </View>
                 </TouchableHighlight>
                 <TouchableHighlight onPress={() => {
                     this.showTimePicker();
                 }}>
                     <View>
-                        <Heading label="Time" value={this.state.data.date.toLocaleString()}/>
+                        <Heading label="Time" value={this.state.data.date.toLocaleTimeString()}/>
                     </View>
                 </TouchableHighlight>
             </View>
@@ -108,7 +108,12 @@ class Track extends Component {
                 is24Hour: true
             });
             if (action !== TimePickerAndroid.dismissedAction) {
-                // Selected hour (0-23), minute (0-59)
+                var date = this.state.data.date;
+                date.setHours(hour, minute);
+                console.log(date);
+                var data = this.state.data;
+                data.date = date;
+                this.setState({data: data});
             }
         } catch ({code, message}) {
             console.warn('Cannot open time picker', message);
